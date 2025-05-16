@@ -17,7 +17,8 @@ async function getSongs(folder) {
 
     currFolder = folder;
     console.log(folder);
-    let a = await fetch(`http://127.0.0.1:3000/public/songs/${folder}/info.json`);
+    // let a = await fetch(`http://127.0.0.1:3000/public/songs/${folder}/info.json`);
+    let a = await fetch(`https://lbvkxbtwnitlhangidqd.supabase.co/storage/v1/object/public/songs/${folder}/info.json`);
     let response = await a.json();
 
     songs = response.songs || [];
@@ -61,22 +62,15 @@ const playMusic = (track, pause = false) => {
 }
 
 async function displayAlbums() {
-    let a = await fetch(`http://127.0.0.1:3000/public/songs/`);
-    let response = await a.text();
-    let div = document.createElement("div");
-    div.innerHTML = response;
-    let anchors = div.getElementsByTagName("a");
     let cardContainer = document.querySelector(".cardContainer");
-    let array = Array.from(anchors);
+    let array = ["Abhishek's Special", "Angry", "Bright", "Chill", "Dark", "Diljit", "Funky", "Happy", "Karan", "Nusrat", "Uplifting"];
     for (let index = 0; index < array.length; index++) {
-        const e = array[index];
-        if (e.href.includes("/songs")) {
-            let folder = e.href.split("/").slice(-2)[0];
+        let folder = array[index];
 
-            //Get the metadata of the folder
-            let a = await fetch(`http://127.0.0.1:3000/public/songs/${folder}/info.json`);
-            let response = await a.json();
-            cardContainer.innerHTML = cardContainer.innerHTML + `<div data-folder="${folder}" class="card">
+        //Get the metadata of the folder
+        let a = await fetch(`https://lbvkxbtwnitlhangidqd.supabase.co/storage/v1/object/public/songs/${folder}/info.json`);
+        let response = await a.json();
+        cardContainer.innerHTML = cardContainer.innerHTML + `<div data-folder="${folder}" class="card">
                         <div>
                             <div class="play">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#000">
@@ -90,7 +84,6 @@ async function displayAlbums() {
                         <h2>${response.title}</h2>
                         <p>${response.description}</p>
                     </div>`
-        }
     }
 
     //load the playlist whenever card is clicked
